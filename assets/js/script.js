@@ -1,64 +1,33 @@
-document.addEventListener('DOMContentLoaded', function() {
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const totalSlides = slides.length;
 
-    function showSlide(index) {
-        if (index < 0) {
-            currentSlide = totalSlides - 1;
-        } else if (index >= totalSlides) {
-            currentSlide = 0;
-        } else {
-            currentSlide = index;
-        }
 
-        const offset = -currentSlide * 100;
-        document.querySelector('.slider').style.transform = `translateX(${offset}%)`;
-    }
+const API_URL = 'https://67287885270bd0b975559810.mockapi.io/api/v1/Attractions';
 
-    function nextSlide() {
-        showSlide(currentSlide + 1);
-    }
-
-    function prevSlide() {
-        showSlide(currentSlide - 1);
-    }
-
-    document.querySelector('.prev').addEventListener('click', prevSlide);
-    document.querySelector('.next').addEventListener('click', nextSlide);
-    setInterval(nextSlide, 3000);
-});
-
-function openModal(modalId) {
-    document.getElementById(modalId).style.display = "block";
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        closeModal(event.target.id);
+async function fetchAttractions() {
+    try {
+        const response = await axios.get(API_URL);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching attractions:', error);
+        return [];
     }
 }
 
-const items = Array.from(document.querySelectorAll('.item'));
 let currentPage = parseInt(localStorage.getItem('currentPage')) || 1;
 const itemsPerPage = 5;
-let filteredItems = [...items];
+let filteredItems = [];
 
 const savedSearchInput = localStorage.getItem('searchInput') || '';
 const savedCategory = localStorage.getItem('category') || 'all';
 document.getElementById('searchInput').value = savedSearchInput;
 
-function applyFilters() {
+async function applyFilters() {
     const searchInput = localStorage.getItem('searchInput').toLowerCase();
     const category = localStorage.getItem('category');
 
-    filteredItems = items.filter(item =>
-        (category === 'all' || item.getAttribute('data-category') === category) &&
-        item.textContent.toLowerCase().includes(searchInput)
+    const attractions = await fetchAttractions();
+    filteredItems = attractions.filter(attraction =>
+        (category === 'all' || attraction.category === category) &&
+        attraction.name.toLowerCase().includes(searchInput)
     );
 
     currentPage = 1;
@@ -74,7 +43,37 @@ function renderItems() {
     const endIndex = startIndex + itemsPerPage;
     const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
-    paginatedItems.forEach(item => {
+    paginatedItems.forEach(attraction => {
+        const item = document.createElement('div');
+        item.className = 'col item';
+        item.setAttribute('data-category', attraction.category);
+
+        const container = document.createElement('div');
+        container.className = 'container';
+
+        const front = document.createElement('div');
+        front.className = 'front';
+        front.style.backgroundImage = `url(${attraction.image})`;
+
+        const frontInner = document.createElement('div');
+        frontInner.className = 'inner';
+        frontInner.textContent = attraction.name;
+
+        front.appendChild(frontInner);
+
+        const back = document.createElement('div');
+        back.className = 'back';
+
+        const backInner = document.createElement('div');
+        backInner.className = 'inner';
+        backInner.textContent = attraction.description;
+
+        back.appendChild(backInner);
+
+        container.appendChild(front);
+        container.appendChild(back);
+        item.appendChild(container);
+
         itemContainer.appendChild(item);
     });
 
@@ -99,18 +98,34 @@ function renderPagination() {
     }
 }
 
-function filterItems() {
+async function filterItems() {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
     localStorage.setItem('searchInput', searchInput);
-    applyFilters();
+    await applyFilters();
 }
 
-function filterByCategory(category) {
+async function filterByCategory(category) {
     localStorage.setItem('category', category);
-    applyFilters();
+    await applyFilters();
 }
 
-applyFilters();
+document.addEventListener('DOMContentLoaded', async function() {
+    await applyFilters();
+});
+
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = "block";
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        closeModal(event.target.id);
+    }
+}
 
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
