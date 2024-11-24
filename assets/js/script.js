@@ -1,14 +1,17 @@
-
-
 const API_URL = 'https://67287885270bd0b975559810.mockapi.io/api/v1/Attractions';
 
 async function fetchAttractions() {
+    const loaderContainer = document.querySelector('.loader-container');
+    loaderContainer.classList.add('show');
+
     try {
         const response = await axios.get(API_URL);
         return response.data;
     } catch (error) {
         console.error('Error fetching attractions:', error);
         return [];
+    } finally {
+        loaderContainer.classList.remove('show');
     }
 }
 
@@ -21,6 +24,9 @@ const savedCategory = localStorage.getItem('category') || 'all';
 document.getElementById('searchInput').value = savedSearchInput;
 
 async function applyFilters() {
+    const loaderContainer = document.querySelector('.loader-container');
+    loaderContainer.classList.add('show');
+
     const searchInput = localStorage.getItem('searchInput').toLowerCase();
     const category = localStorage.getItem('category');
 
@@ -33,6 +39,8 @@ async function applyFilters() {
     currentPage = 1;
     localStorage.setItem('currentPage', currentPage);
     renderItems();
+
+    loaderContainer.classList.remove('show');
 }
 
 function renderItems() {
@@ -73,6 +81,9 @@ function renderItems() {
         container.appendChild(front);
         container.appendChild(back);
         item.appendChild(container);
+        item.addEventListener('click', () => {
+            window.location.href = `../attr-details.html?id=${attraction.id}`;
+        });
 
         itemContainer.appendChild(item);
     });

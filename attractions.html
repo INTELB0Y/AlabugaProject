@@ -15,7 +15,7 @@
             <img class="header__LogIn_icon" src="./assets/img/LogIn.svg" onclick="openModal('loginModal')" alt="!">
         </div>
     </header>
-
+    
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li><a href="./index.html">Главная</a></li>
@@ -68,7 +68,9 @@
                 <button class="searcher__filter-button" onclick="filterByCategory('Monument')">Памятник</button>
             </div>
         </div>
-        <img class = "loader" src="./assets/img/infinite-spinner.svg" alt="goida">
+        <div class="loader-container">
+            <img class="loader" src="./assets/img/infinite-spinner.svg" alt="Загрузка...">
+        </div>
         <div class="content__block">
             <div class="item-container" id="itemContainer"></div>
         </div>
@@ -79,8 +81,8 @@
         <nav class="footer__nav">
             <ul class="footer__menu">
                 <li class="footer__menu-item"><a href="./contacts.html">контакты</a></li>
-                    <li class="footer__menu-item"><a href="./attractions.html">достопримечательности</a></li>
-                    <li class="footer__menu-item"><a href="./unuviable">наша политика</a></li>
+                <li class="footer__menu-item"><a href="./attractions.html">достопримечательности</a></li>
+                <li class="footer__menu-item"><a href="./unuviable">наша политика</a></li>
             </ul>
         </nav>
     </footer>
