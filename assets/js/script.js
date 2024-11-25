@@ -81,9 +81,9 @@ function renderItems() {
         container.appendChild(front);
         container.appendChild(back);
         item.appendChild(container);
-        item.addEventListener('click', () => {
-            window.location.href = `../attr-details.html?id=${attraction.id}`;
-        });
+        // item.addEventListener('click', () => {
+        //     window.location.href = `../attr-details.html?id=${attraction.id}`;
+        // });
 
         itemContainer.appendChild(item);
     });
