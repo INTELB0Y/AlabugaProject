@@ -8,7 +8,7 @@ async function fetchAttractions() {
         const response = await axios.get(API_URL);
         return response.data;
     } catch (error) {
-        console.error('Error fetching attractions:', error);
+        console.error('Упс ошибочка вышла:', error);
         return [];
     } finally {
         loaderContainer.classList.remove('show');
